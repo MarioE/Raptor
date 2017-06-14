@@ -9,6 +9,7 @@ namespace Raptor
     [PublicAPI]
     public enum PacketTypes
     {
+#pragma warning disable 1591
         ConnectRequest = 1,
         Disconnect = 2,
         ContinueConnecting = 3,
@@ -132,5 +133,6 @@ namespace Raptor
         PlayerHurtV2 = 117,
         PlayerDeathV2 = 118,
         CreateCombatTextExtended = 119
+#pragma warning restore 1591
     }
 }

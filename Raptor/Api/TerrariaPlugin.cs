@@ -26,7 +26,7 @@ namespace Raptor.Api
         /// </summary>
         [NotNull]
         public virtual string Name => "";
-        
+
         /// <summary>
         ///     Gets the version.
         /// </summary>
@@ -50,6 +50,9 @@ namespace Raptor.Api
         {
         }
 
+        /// <summary>
+        ///     Destructs the plugin.
+        /// </summary>
         ~TerrariaPlugin()
         {
             Dispose(false);

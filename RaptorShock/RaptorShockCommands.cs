@@ -6,19 +6,9 @@ using Terraria.ID;
 
 namespace RaptorShock
 {
-    /// <summary>
-    ///     Holds the RaptorShock commands.
-    /// </summary>
-    public sealed class RaptorShockCommands
+    internal sealed class RaptorShockCommands
     {
-        /// <summary>
-        ///     Gets a value indicating whether god mode is toggled.
-        /// </summary>
         public bool IsGodMode { get; private set; }
-
-        /// <summary>
-        ///     Gets the speed value.
-        /// </summary>
         public float? SpeedValue { get; private set; }
 
         [Command("godmode", ".godmode", HelpText = "Toggles god mode.")]

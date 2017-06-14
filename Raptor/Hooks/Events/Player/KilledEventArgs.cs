@@ -29,7 +29,7 @@ namespace Raptor.Hooks.Events.Player
         /// </summary>
         [NotNull]
         public PlayerDeathReason DamageSource { get; }
-        
+
         /// <summary>
         ///     Gets a value indicating whether the player is the local player.
         /// </summary>

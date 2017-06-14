@@ -158,7 +158,7 @@ namespace RaptorShock.Commands
                                                 parameter.Name;
                             throw new FormatException($"Invalid {parameterName} '{argument}'.");
                         }
-                        
+
                         p.Add(result);
                         return s.Substring(nextIndex);
                     });

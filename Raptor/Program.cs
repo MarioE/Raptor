@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.Win32;
 using Mono.Cecil;
@@ -13,36 +12,26 @@ using Terraria;
 
 namespace Raptor
 {
-    /// <summary>
-    ///     The main class.
-    /// </summary>
-    public static class Program
+    internal static class Program
     {
-        private static string _rootPath;
         private static Assembly _terrariaAssembly;
-
-        [DllImport("kernel32.dll")]
-        private static extern bool CreateSymbolicLink(string lpSymlinkFileName, string lpTargetFileName, int dwFlags);
-
-        /// <summary>
-        ///     The main entry point for the application.
-        /// </summary>
-        /// <param name="args">The arguments.</param>
+        
         [STAThread]
         private static void Main(string[] args)
         {
             var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Re-Logic\Terraria");
-            _rootPath = (string)key?.GetValue("Install_Path", null);
-            if (_rootPath == null)
+            var rootPath = (string)key?.GetValue("Install_Path", null);
+            if (rootPath == null)
             {
                 ShowError("Could not find Terraria installation path.");
                 return;
             }
-            
+
             if (args.Length == 1 && args[0] == "setup")
             {
-                CreateSymbolicLink("Content", Path.Combine(_rootPath, "Content"), 1);
-                CreateSymbolicLink("ReLogic.Native.dll", Path.Combine(_rootPath, "ReLogic.Native.dll"), 0);
+                NativeMethods.CreateSymbolicLink("Content", Path.Combine(rootPath, "Content"), 1);
+                NativeMethods.CreateSymbolicLink("ReLogic.Native.dll", Path.Combine(rootPath, "ReLogic.Native.dll"),
+                    0);
                 return;
             }
             if (!Directory.Exists("Content") || !File.Exists("ReLogic.Native.dll"))
@@ -58,13 +47,13 @@ namespace Raptor
                 process.WaitForExit();
             }
 
-            var terrariaPath = Path.Combine(_rootPath, "Terraria.exe");
+            var terrariaPath = Path.Combine(rootPath, "Terraria.exe");
             if (!File.Exists(terrariaPath))
             {
                 ShowError("Could not find Terraria executable.");
                 return;
             }
-            
+
             var assembly = AssemblyDefinition.ReadAssembly(terrariaPath);
             var modifications = from t in Assembly.GetExecutingAssembly().GetExportedTypes()
                                 where t.IsSubclassOf(typeof(Modification))

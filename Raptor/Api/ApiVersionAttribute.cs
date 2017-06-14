@@ -9,7 +9,7 @@ namespace Raptor.Api
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     [MeansImplicitUse]
     [PublicAPI]
-    public class ApiVersionAttribute : Attribute
+    public sealed class ApiVersionAttribute : Attribute
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="ApiVersionAttribute" /> class with the specified version.

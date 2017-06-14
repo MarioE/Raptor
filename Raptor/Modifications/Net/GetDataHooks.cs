@@ -14,6 +14,7 @@ namespace Raptor.Modifications.Net
     {
         private const BindingFlags Flags = BindingFlags.NonPublic | BindingFlags.Static;
 
+        /// <inheritdoc />
         protected override void ApplyImpl(AssemblyDefinition assembly)
         {
             var messageBuffer = assembly.GetType("MessageBuffer");
