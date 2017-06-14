@@ -44,16 +44,11 @@ namespace Raptor
                 throw new ArgumentNullException(nameof(method));
             }
 
-            if (method.ReturnType == method.Module.TypeSystem.Void)
+            if (method.ReturnType != method.Module.TypeSystem.Void)
             {
-                method.InjectBeginning(Create(OpCodes.Ret));
+                method.InjectBeginning(Create(OpCodes.Initobj, method.ReturnType));
             }
-            else
-            {
-                method.InjectBeginning(
-                    Create(OpCodes.Initobj, method.ReturnType),
-                    Create(OpCodes.Ret));
-            }
+            method.InjectBeginning(Create(OpCodes.Ret));
         }
 
         /// <summary>

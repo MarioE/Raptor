@@ -73,7 +73,7 @@ namespace RaptorShock
             Utils.ShowSuccessMessage($"Spawned {stackSize} {item.Name}(s).");
         }
 
-        [Command("speed", ".speed [speed-value]", HelpText = "Sets your speed value.")]
+        [Command("speed", ".speed [speed]", HelpText = "Sets your speed value.")]
         public void Speed(float? speed = null)
         {
             if (speed == null)

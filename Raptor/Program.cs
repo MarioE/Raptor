@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -37,6 +38,25 @@ namespace Raptor
                 ShowError("Could not find Terraria installation path.");
                 return;
             }
+            
+            if (args.Length == 1 && args[0] == "setup")
+            {
+                CreateSymbolicLink("Content", Path.Combine(_rootPath, "Content"), 1);
+                CreateSymbolicLink("ReLogic.Native.dll", Path.Combine(_rootPath, "ReLogic.Native.dll"), 0);
+                return;
+            }
+            if (!Directory.Exists("Content") || !File.Exists("ReLogic.Native.dll"))
+            {
+                var process = new Process
+                {
+                    StartInfo = new ProcessStartInfo(Assembly.GetEntryAssembly().Location, "setup")
+                    {
+                        Verb = "runas"
+                    }
+                };
+                process.Start();
+                process.WaitForExit();
+            }
 
             var terrariaPath = Path.Combine(_rootPath, "Terraria.exe");
             if (!File.Exists(terrariaPath))
@@ -44,7 +64,7 @@ namespace Raptor
                 ShowError("Could not find Terraria executable.");
                 return;
             }
-
+            
             var assembly = AssemblyDefinition.ReadAssembly(terrariaPath);
             var modifications = from t in Assembly.GetExecutingAssembly().GetExportedTypes()
                                 where t.IsSubclassOf(typeof(Modification))
@@ -99,8 +119,6 @@ namespace Raptor
         {
             using (var clientApi = new ClientApi())
             {
-                CreateSymbolicLink("Content", Path.Combine(_rootPath, "Content"), 1);
-                CreateSymbolicLink("ReLogic.Native.dll", Path.Combine(_rootPath, "ReLogic.Native.dll"), 0);
                 clientApi.LoadPlugins();
                 WindowsLaunch.Main(args);
             }

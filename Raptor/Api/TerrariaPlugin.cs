@@ -26,12 +26,7 @@ namespace Raptor.Api
         /// </summary>
         [NotNull]
         public virtual string Name => "";
-
-        /// <summary>
-        ///     Gets the order. Plugins will be initialized in increasing order.
-        /// </summary>
-        public virtual int Order => 0;
-
+        
         /// <summary>
         ///     Gets the version.
         /// </summary>
