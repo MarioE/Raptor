@@ -2,13 +2,10 @@
 
 namespace Raptor.Modifications
 {
-    /// <summary>
-    ///     Represents a modification that removes steam.
-    /// </summary>
-    public sealed class RemoveSteam : Modification
+    internal sealed class RemoveSteam : Modification
     {
         /// <inheritdoc />
-        protected override void ApplyImpl(AssemblyDefinition assembly)
+        public override void Apply(AssemblyDefinition assembly)
         {
             var steam = assembly.GetType("SocialAPI");
             steam.GetMethod("Initialize").BlankOut();

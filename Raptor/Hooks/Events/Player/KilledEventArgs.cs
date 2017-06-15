@@ -27,6 +27,7 @@ namespace Raptor.Hooks.Events.Player
         /// <summary>
         ///     Gets the damage source.
         /// </summary>
+        [CLSCompliant(false)]
         [NotNull]
         public PlayerDeathReason DamageSource { get; }
 
@@ -43,6 +44,7 @@ namespace Raptor.Hooks.Events.Player
         /// <summary>
         ///     Gets the player.
         /// </summary>
+        [CLSCompliant(false)]
         [NotNull]
         public Terraria.Player Player { get; }
     }

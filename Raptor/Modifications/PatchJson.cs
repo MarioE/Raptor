@@ -4,13 +4,9 @@ using Newtonsoft.Json;
 
 namespace Raptor.Modifications
 {
-    /// <summary>
-    ///     Represents a modification that patches the Newtonsoft.JSON version.
-    /// </summary>
-    public sealed class PatchJson : Modification
+    internal sealed class PatchJson : Modification
     {
-        /// <inheritdoc />
-        protected override void ApplyImpl(AssemblyDefinition assembly)
+        public override void Apply(AssemblyDefinition assembly)
         {
             var module = assembly.MainModule;
             foreach (var reference in module.AssemblyReferences)

@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Raptor.Api;
@@ -37,3 +38,4 @@ using Raptor.Api;
 [assembly: AssemblyFileVersion("1.0.0.0")]
 [assembly: InternalsVisibleTo("Terraria")]
 [assembly: LoggerConfigurator]
+[assembly: CLSCompliant(true)]

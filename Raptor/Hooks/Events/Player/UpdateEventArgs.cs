@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using JetBrains.Annotations;
 using Terraria;
 
@@ -23,6 +24,7 @@ namespace Raptor.Hooks.Events.Player
         /// <summary>
         ///     Gets the player.
         /// </summary>
+        [CLSCompliant(false)]
         [NotNull]
         public Terraria.Player Player { get; }
     }

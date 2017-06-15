@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using JetBrains.Annotations;
 using Terraria.Localization;
 
@@ -67,6 +68,7 @@ namespace Raptor.Hooks.Events.Net
         /// <summary>
         ///     Gets the message text.
         /// </summary>
+        [CLSCompliant(false)]
         public NetworkText Text { get; }
     }
 }

@@ -7,15 +7,12 @@ namespace Raptor.Modifications.Player
 {
     using static Instruction;
 
-    /// <summary>
-    ///     Represents a modification that adds Hurt hooks.
-    /// </summary>
-    public sealed class HurtHooks : Modification
+    internal sealed class HurtHooks : Modification
     {
         private const BindingFlags Flags = BindingFlags.NonPublic | BindingFlags.Static;
 
         /// <inheritdoc />
-        protected override void ApplyImpl(AssemblyDefinition assembly)
+        public override void Apply(AssemblyDefinition assembly)
         {
             var player = assembly.GetType("Player");
             var module = player.Module;

@@ -3,10 +3,7 @@ using Mono.Cecil;
 
 namespace Raptor.Modifications
 {
-    /// <summary>
-    ///     Represents a modification that makes all types public.
-    /// </summary>
-    public sealed class MakeTypesPublic : Modification
+    internal sealed class MakeTypesPublic : Modification
     {
         private static void MakePublic(TypeDefinition type)
         {
@@ -49,9 +46,8 @@ namespace Raptor.Modifications
                 MakePublic(nestedType);
             }
         }
-
-        /// <inheritdoc />
-        protected override void ApplyImpl(AssemblyDefinition assembly)
+        
+        public override void Apply(AssemblyDefinition assembly)
         {
             foreach (var type in assembly.Modules.SelectMany(m => m.Types))
             {

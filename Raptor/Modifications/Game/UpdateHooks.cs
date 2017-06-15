@@ -6,15 +6,12 @@ using static Mono.Cecil.Cil.Instruction;
 
 namespace Raptor.Modifications.Game
 {
-    /// <summary>
-    ///     Represents a modification that adds Update hooks.
-    /// </summary>
-    public sealed class UpdateHooks : Modification
+    internal sealed class UpdateHooks : Modification
     {
         private const BindingFlags Flags = BindingFlags.NonPublic | BindingFlags.Static;
 
         /// <inheritdoc />
-        protected override void ApplyImpl(AssemblyDefinition assembly)
+        public override void Apply(AssemblyDefinition assembly)
         {
             var main = assembly.GetType("Main");
             var module = main.Module;

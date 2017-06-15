@@ -202,9 +202,9 @@ namespace RaptorShock.Commands
             foreach (var command2 in _commands)
             {
                 var commandNames = new List<string> {command2.Name};
-                if (command2.Aliases != null)
+                if (command2.Alias != null)
                 {
-                    commandNames.AddRange(command2.Aliases);
+                    commandNames.Add(command2.Alias);
                 }
 
                 foreach (var commandName in commandNames)

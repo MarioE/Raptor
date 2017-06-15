@@ -67,6 +67,7 @@ namespace Raptor.Hooks.Events.Net
         /// <summary>
         ///     Gets the message text.
         /// </summary>
+        [CLSCompliant(false)]
         public NetworkText Text { get; }
     }
 }

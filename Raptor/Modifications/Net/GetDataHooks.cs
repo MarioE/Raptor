@@ -7,15 +7,11 @@ namespace Raptor.Modifications.Net
 {
     using static Instruction;
 
-    /// <summary>
-    ///     Represents a modification that adds SendData hooks.
-    /// </summary>
-    public sealed class GetDataHooks : Modification
+    internal sealed class GetDataHooks : Modification
     {
         private const BindingFlags Flags = BindingFlags.NonPublic | BindingFlags.Static;
-
-        /// <inheritdoc />
-        protected override void ApplyImpl(AssemblyDefinition assembly)
+        
+        public override void Apply(AssemblyDefinition assembly)
         {
             var messageBuffer = assembly.GetType("MessageBuffer");
             var module = messageBuffer.Module;

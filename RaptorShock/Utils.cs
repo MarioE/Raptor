@@ -13,12 +13,14 @@ namespace RaptorShock
         /// <summary>
         ///     Gets the local player.
         /// </summary>
+        [CLSCompliant(false)]
         [NotNull]
         public static Player LocalPlayer => Main.player[Main.myPlayer];
 
         /// <summary>
         ///     Gets the local player's selected item.
         /// </summary>
+        [CLSCompliant(false)]
         [NotNull]
         public static Item LocalPlayerItem => LocalPlayer.inventory[LocalPlayer.selectedItem];
 

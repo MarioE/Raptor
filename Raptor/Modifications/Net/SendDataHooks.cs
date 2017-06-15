@@ -6,15 +6,12 @@ using static Mono.Cecil.Cil.Instruction;
 
 namespace Raptor.Modifications.Net
 {
-    /// <summary>
-    ///     Represents a modification that adds SendData hooks.
-    /// </summary>
-    public sealed class SendDataHooks : Modification
+    internal sealed class SendDataHooks : Modification
     {
         private const BindingFlags Flags = BindingFlags.NonPublic | BindingFlags.Static;
 
         /// <inheritdoc />
-        protected override void ApplyImpl(AssemblyDefinition assembly)
+        public override void Apply(AssemblyDefinition assembly)
         {
             var netMessage = assembly.GetType("NetMessage");
             var module = netMessage.Module;

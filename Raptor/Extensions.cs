@@ -12,6 +12,7 @@ namespace Raptor
     /// <summary>
     ///     Provides extension methods.
     /// </summary>
+    [CLSCompliant(false)]
     public static class Extensions
     {
         private static readonly Dictionary<OpCode, OpCode> ShortToLong = new Dictionary<OpCode, OpCode>

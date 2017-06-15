@@ -26,10 +26,10 @@ namespace RaptorShock.Commands
         }
 
         /// <summary>
-        /// Gets the aliases.
+        /// Gets the alias.
         /// </summary>
         [CanBeNull]
-        public string[] Aliases => _attribute.Aliases;
+        public string Alias => _attribute.Alias;
 
         /// <summary>
         /// Gets the help text.

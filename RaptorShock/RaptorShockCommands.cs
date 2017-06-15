@@ -15,7 +15,7 @@ namespace RaptorShock
 
         [Command("autoreuse", ".autoreuse",
             HelpText = "Toggles your selected item's autoreuse.",
-            Aliases = new[] {"ar"})]
+            Alias = "ar")]
         public void AutoReuse()
         {
             Utils.LocalPlayerItem.autoReuse = !Utils.LocalPlayerItem.autoReuse;
@@ -54,17 +54,17 @@ namespace RaptorShock
                 Utils.ShowSuccessMessage("Available commands:");
                 foreach (var command in commands)
                 {
-                    Utils.ShowInfoMessage(command.Aliases == null
+                    Utils.ShowInfoMessage(command.Alias == null
                         ? $"{command.Name}: {command.HelpText}"
-                        : $"{command.Name} (aliases: {string.Join(", ", command.Aliases)}): {command.HelpText}");
+                        : $"{command.Name} (alias: {command.Alias}): {command.HelpText}");
                 }
                 return;
             }
 
             var command2 =
                 commands.FirstOrDefault(c => c.Name.Equals(commandName, StringComparison.OrdinalIgnoreCase) ||
-                                             (c.Aliases?.Any(a => a.Equals(commandName,
-                                                  StringComparison.OrdinalIgnoreCase)) ?? false));
+                                             (c.Alias?.Equals(commandName, StringComparison.OrdinalIgnoreCase) ??
+                                              false));
             if (command2 == null)
             {
                 Utils.ShowErrorMessage($"Invalid command '{commandName}'.");
@@ -93,7 +93,7 @@ namespace RaptorShock
 
         [Command("item", ".item <item-name> [stack-size] [prefix]",
             HelpText = "Spawns an item.",
-            Aliases = new[] {"i"})]
+            Alias = "i")]
         public void Item(Item item, int stackSize = 1, byte prefix = 0)
         {
             if (stackSize <= 0 || stackSize > item.maxStack)
@@ -140,7 +140,7 @@ namespace RaptorShock
 
         [Command("usetime", ".usetime <use-time>",
             HelpText = "Sets your selected item's use time.",
-            Aliases = new[] {"ut"})]
+            Alias = "ut")]
         public void UseTime(int useTime)
         {
             if (useTime <= 0)
