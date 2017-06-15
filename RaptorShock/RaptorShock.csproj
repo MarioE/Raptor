@@ -77,6 +77,7 @@
     <Compile Include="Commands\Parsers\StringParser.cs" />
     <Compile Include="Commands\Parsers\IntParser.cs" />
     <Compile Include="Commands\Parsers\Parser.cs" />
+    <Compile Include="Config.cs" />
     <Compile Include="RaptorShockCommands.cs" />
     <Compile Include="RaptorShockPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

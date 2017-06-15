@@ -1,9 +1,11 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
 using System.Reflection;
 using JetBrains.Annotations;
 using log4net;
 using Microsoft.Xna.Framework.Input;
+using Newtonsoft.Json;
 using Raptor;
 using Raptor.Api;
 using Raptor.Hooks;
@@ -20,7 +22,10 @@ namespace RaptorShock
     [ApiVersion(1, 0)]
     public class RaptorShockPlugin : TerrariaPlugin
     {
+        private static readonly string ConfigPath = Path.Combine("config", "raptorshock.json");
+
         private readonly RaptorShockCommands _commands = new RaptorShockCommands();
+        private readonly Config _config = new Config();
         private readonly ILog _log = LogManager.GetLogger("RaptorShock");
 
         private KeyboardState _keyboard;
@@ -33,7 +38,14 @@ namespace RaptorShock
         {
             Instance = this;
 
+            Directory.CreateDirectory("config");
+            if (File.Exists(ConfigPath))
+            {
+                _config = JsonConvert.DeserializeObject<Config>(File.ReadAllText(ConfigPath));
+            }
+
             CommandManager.Register(_commands);
+            GameHooks.Initialized += OnGameInitialized;
             GameHooks.Update += OnGameUpdate;
             PlayerHooks.Hurting += OnPlayerHurting;
             PlayerHooks.Kill += OnPlayerKill;
@@ -71,8 +83,15 @@ namespace RaptorShock
         {
             if (disposing)
             {
+                File.WriteAllText(ConfigPath, JsonConvert.SerializeObject(_config, Formatting.Indented));
+
                 CommandManager.Deregister(_commands);
+                GameHooks.Initialized -= OnGameInitialized;
                 GameHooks.Update -= OnGameUpdate;
+                PlayerHooks.Hurting -= OnPlayerHurting;
+                PlayerHooks.Kill -= OnPlayerKill;
+                PlayerHooks.Update2 -= OnPlayerUpdate2;
+                PlayerHooks.Updated2 -= OnPlayerUpdated2;
             }
 
             base.Dispose(disposing);
@@ -80,6 +99,11 @@ namespace RaptorShock
 
         private bool IsKeyDown(Keys key) => _keyboard.IsKeyDown(key);
         private bool IsKeyTapped(Keys key) => _keyboard.IsKeyDown(key) && !_lastKeyboard.IsKeyDown(key);
+
+        private void OnGameInitialized(object sender, EventArgs e)
+        {
+            Main.showSplash = _config.ShowSplashScreen;
+        }
 
         private void OnGameUpdate(object sender, HandledEventArgs e)
         {
