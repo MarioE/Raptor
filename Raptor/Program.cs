@@ -55,7 +55,7 @@ namespace Raptor
             }
 
             var assembly = AssemblyDefinition.ReadAssembly(terrariaPath);
-            var modifications = from t in Assembly.GetExecutingAssembly().GetExportedTypes()
+            var modifications = from t in Assembly.GetExecutingAssembly().GetTypes()
                                 where t.IsSubclassOf(typeof(Modification))
                                 let m = (Modification)Activator.CreateInstance(t)
                                 orderby m.Order
