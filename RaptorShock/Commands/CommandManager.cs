@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 using RaptorShock.Commands.Parsers;
 using Terraria;
@@ -14,6 +15,8 @@ namespace RaptorShock.Commands
     [PublicAPI]
     public sealed class CommandManager
     {
+        private static readonly Regex CamelCaseRegex = new Regex("(?<=[a-z])([A-Z])");
+
         private readonly List<Command> _commands = new List<Command>();
 
         private readonly Dictionary<Type, Parser> _parsers = new Dictionary<Type, Parser>
@@ -30,13 +33,8 @@ namespace RaptorShock.Commands
         /// </summary>
         public IEnumerable<Command> Commands => _commands.AsReadOnly();
 
-        private static string GetNextArgument(string s, string syntax, out int nextIndex)
+        private static string GetNextArgument(string s, out int nextIndex)
         {
-            if (s.Length == 0)
-            {
-                throw new FormatException($"Syntax: {syntax}");
-            }
-
             var i = 1;
             if (s.StartsWith("\""))
             {
@@ -61,6 +59,9 @@ namespace RaptorShock.Commands
             nextIndex = i;
             return s.Substring(0, i);
         }
+
+        private static string PrettifyCamelCase(string camelCase) =>
+            CamelCaseRegex.Replace(camelCase, " $1").ToLower().Trim();
 
         /// <summary>
         ///     Adds the specified parser.
@@ -149,13 +150,16 @@ namespace RaptorShock.Commands
                             p.Add(parameter.DefaultValue);
                             return s;
                         }
+                        if (string.IsNullOrEmpty(s))
+                        {
+                            throw new FormatException($"Syntax: {syntax}");
+                        }
 
-                        var argument = GetNextArgument(s, syntax, out var nextIndex);
+                        var argument = GetNextArgument(s, out var nextIndex);
                         var result = parser.Parse(argument);
                         if (result == null)
                         {
-                            var parameterName = parameter.GetCustomAttribute<DisplayNameAttribute>()?.Name ??
-                                                parameter.Name;
+                            var parameterName = PrettifyCamelCase(parameter.Name);
                             throw new FormatException($"Invalid {parameterName} '{argument}'.");
                         }
 
@@ -176,7 +180,7 @@ namespace RaptorShock.Commands
                     method.Invoke(obj, parameters.ToArray());
                 }
 
-                _commands.Add(new Command(commandAttribute.Name, syntax, commandAttribute.HelpText, Action));
+                _commands.Add(new Command(commandAttribute, Action));
             }
         }
 
@@ -197,13 +201,21 @@ namespace RaptorShock.Commands
             var longestCommandName = "";
             foreach (var command2 in _commands)
             {
-                var commandName = command2.Name;
-                if (s.StartsWith(commandName, StringComparison.OrdinalIgnoreCase))
+                var commandNames = new List<string> {command2.Name};
+                if (command2.Aliases != null)
                 {
-                    if (commandName.Length > longestCommandName.Length)
+                    commandNames.AddRange(command2.Aliases);
+                }
+
+                foreach (var commandName in commandNames)
+                {
+                    if (s.StartsWith(commandName, StringComparison.OrdinalIgnoreCase))
                     {
-                        command = command2;
-                        longestCommandName = commandName;
+                        if (commandName.Length > longestCommandName.Length)
+                        {
+                            command = command2;
+                            longestCommandName = commandName;
+                        }
                     }
                 }
             }

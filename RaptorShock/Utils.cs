@@ -17,6 +17,12 @@ namespace RaptorShock
         public static Player LocalPlayer => Main.player[Main.myPlayer];
 
         /// <summary>
+        ///     Gets the local player's selected item.
+        /// </summary>
+        [NotNull]
+        public static Item LocalPlayerItem => LocalPlayer.inventory[LocalPlayer.selectedItem];
+
+        /// <summary>
         ///     Shows an error message.
         /// </summary>
         /// <param name="message">The message, which must not be <c>null</c>.</param>

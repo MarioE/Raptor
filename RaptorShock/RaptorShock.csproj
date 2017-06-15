@@ -36,6 +36,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <DocumentationFile>bin\Release\RaptorShock.xml</DocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="JetBrains.Annotations, Version=10.4.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
@@ -54,7 +55,7 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -70,7 +71,6 @@
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\CommandAttribute.cs" />
     <Compile Include="Commands\CommandManager.cs" />
-    <Compile Include="Commands\DisplayNameAttribute.cs" />
     <Compile Include="Commands\Parsers\ByteParser.cs" />
     <Compile Include="Commands\Parsers\FloatParser.cs" />
     <Compile Include="Commands\Parsers\ItemParser.cs" />

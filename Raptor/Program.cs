@@ -15,7 +15,7 @@ namespace Raptor
     internal static class Program
     {
         private static Assembly _terrariaAssembly;
-        
+
         [STAThread]
         private static void Main(string[] args)
         {

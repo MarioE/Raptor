@@ -9,44 +9,46 @@ namespace RaptorShock.Commands
     public sealed class Command
     {
         private readonly Action<string> _action;
+        private readonly CommandAttribute _attribute;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Command" /> class with the specified name, syntax, help text, and
-        ///     action.
+        ///     Initializes a new instance of the <see cref="Command" /> class with the specified attribute and action.
         /// </summary>
-        /// <param name="name">The name, which must not be <c>null</c>.</param>
-        /// <param name="syntax">The syntax, which must not be <c>null</c>.</param>
-        /// <param name="helpText">The help text.</param>
+        /// <param name="attribute">The name, which must not be <c>null</c>.</param>
         /// <param name="action">The action, which must not be <c>null</c>.</param>
         /// <exception cref="ArgumentNullException">
-        ///     Either <paramref name="name" />, <paramref name="syntax" />, or <paramref name="action" /> is <c>null</c>.
+        ///     Either <paramref name="attribute" /> or <paramref name="action" /> is <c>null</c>.
         /// </exception>
-        public Command([NotNull] string name, string syntax, string helpText, [NotNull] Action<string> action)
+        public Command([NotNull] CommandAttribute attribute, [NotNull] Action<string> action)
         {
-            Name = name ?? throw new ArgumentNullException(nameof(name));
-            Syntax = syntax ?? throw new ArgumentNullException(nameof(syntax));
-            HelpText = helpText;
+            _attribute = attribute ?? throw new ArgumentNullException(nameof(attribute));
             _action = action ?? throw new ArgumentNullException(nameof(action));
         }
 
         /// <summary>
-        ///     Gets the help text.
+        /// Gets the aliases.
         /// </summary>
-        [NotNull]
-        public string HelpText { get; }
+        [CanBeNull]
+        public string[] Aliases => _attribute.Aliases;
 
         /// <summary>
-        ///     Gets the name.
+        /// Gets the help text.
         /// </summary>
-        [NotNull]
-        public string Name { get; }
+        [CanBeNull]
+        public string HelpText => _attribute.HelpText;
 
         /// <summary>
-        ///     Gets the syntax.
+        /// Gets the name.
         /// </summary>
         [NotNull]
-        public string Syntax { get; }
+        public string Name => _attribute.Name;
 
+        /// <summary>
+        /// Gets the syntax.
+        /// </summary>
+        [NotNull]
+        public string Syntax => _attribute.Syntax;
+        
         /// <summary>
         ///     Invokes the command using the specified string.
         /// </summary>

@@ -107,7 +107,7 @@ namespace RaptorShock
                 else
                 {
                     var chatText = Main.chatText;
-                    if (chatText.StartsWith("."))
+                    if (chatText.StartsWith(".") && !chatText.StartsWith(".."))
                     {
                         try
                         {
@@ -126,6 +126,11 @@ namespace RaptorShock
                     }
                     else if (!string.IsNullOrEmpty(chatText))
                     {
+                        if (chatText.StartsWith("."))
+                        {
+                            chatText = chatText.Substring(1);
+                        }
+
                         if (Main.netMode == 0)
                         {
                             Main.NewText($"<{Utils.LocalPlayer.name}> {chatText}");
@@ -166,12 +171,23 @@ namespace RaptorShock
 
         private void OnPlayerUpdate2(object sender, UpdatedEventArgs e)
         {
-            if (e.IsLocal && _commands.IsGodMode)
+            if (e.IsLocal)
             {
                 var player = e.Player;
-                player.breath = player.breathMax;
-                player.statLife = player.statLifeMax2;
-                player.statMana = player.statManaMax2;
+                if (_commands.IsGodMode)
+                {
+                    player.breath = player.breathMax - 1;
+                    player.statLife = player.statLifeMax2;
+                    player.statMana = player.statManaMax2;
+                }
+                if (_commands.IsInfiniteMana)
+                {
+                    player.statMana = player.statManaMax2;
+                }
+                if (_commands.IsInfiniteWings)
+                {
+                    player.wingTime = 2;
+                }
             }
         }
 

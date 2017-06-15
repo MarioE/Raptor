@@ -25,6 +25,12 @@ namespace RaptorShock.Commands
         }
 
         /// <summary>
+        /// Gets or sets the aliases.
+        /// </summary>
+        [CanBeNull]
+        public string[] Aliases { get; set; }
+
+        /// <summary>
         ///     Gets or sets the help text.
         /// </summary>
         [CanBeNull]
