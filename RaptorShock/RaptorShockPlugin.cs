@@ -6,13 +6,12 @@ using JetBrains.Annotations;
 using log4net;
 using Microsoft.Xna.Framework.Input;
 using Newtonsoft.Json;
-using Raptor;
 using Raptor.Api;
 using Raptor.Hooks;
 using Raptor.Hooks.Events.Player;
 using RaptorShock.Commands;
 using Terraria;
-using Terraria.Localization;
+using Terraria.Chat;
 
 namespace RaptorShock
 {
@@ -116,7 +115,7 @@ namespace RaptorShock
             _keyboard = Keyboard.GetState();
             Main.chatRelease = false;
 
-            if (Main.gameMenu)
+            if (Main.gameMenu || Main.editChest || Main.editSign)
             {
                 return;
             }
@@ -144,6 +143,7 @@ namespace RaptorShock
                         }
                         catch (Exception ex)
                         {
+                            Utils.ShowErrorMessage("An exception occurred. Check the log for more details.");
                             _log.Error($"An exception occurred while running the command '{chatText}':");
                             _log.Error(ex);
                         }
@@ -161,8 +161,7 @@ namespace RaptorShock
                         }
                         else
                         {
-                            NetMessage.SendData((int)PacketTypes.SmartTextMessage, -1, -1,
-                                NetworkText.FromLiteral(chatText));
+                            NetMessage.SendChatMessageFromClient(new ChatMessage(chatText));
                         }
                     }
 

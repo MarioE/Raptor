@@ -37,7 +37,7 @@ namespace Raptor
         NpcUpdate = 23,
         NpcItemStrike = 24,
 
-        [Obsolete("ChatText is not used anymore. See SmartTextMessage.", true)]
+        [Obsolete("ChatText is not used anymore.", true)]
         ChatText = 25,
         PlayerDamage = 26,
         ProjectileNew = 27,

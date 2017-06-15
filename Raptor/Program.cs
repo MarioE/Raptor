@@ -86,6 +86,14 @@ namespace Raptor
             {
                 return _terrariaAssembly;
             }
+            if (shortName == "ReLogic")
+            {
+                var stream = _terrariaAssembly.GetManifestResourceStream("Terraria.Libraries.ReLogic.ReLogic.dll");
+                // ReSharper disable once PossibleNullReferenceException
+                var bytes = new byte[stream.Length];
+                stream.Read(bytes, 0, bytes.Length);
+                return Assembly.Load(bytes);
+            }
 
             Directory.CreateDirectory("plugins");
             foreach (var pluginPath in Directory.EnumerateDirectories("plugins", "*.dll"))
