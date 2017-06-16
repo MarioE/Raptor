@@ -18,12 +18,12 @@ namespace Raptor.Modifications.Game
             var instructions = body.Instructions;
             for (var i = instructions.Count - 1; i >= 0; --i)
             {
+                // Check for an invocation of some action involving LightingSwipeData.
                 var instruction = instructions[i];
                 if (instruction.OpCode != OpCodes.Callvirt)
                 {
                     continue;
                 }
-
                 var method2 = (MethodReference)instruction.Operand;
                 var type = method2.DeclaringType;
                 if (method2.Name != "Invoke" || !type.IsGenericInstance ||
@@ -32,6 +32,8 @@ namespace Raptor.Modifications.Game
                     continue;
                 }
 
+                // The function field of LightingSwipeData has already been loaded. Thus, we need to move back two
+                // instructions if we want our hooks to be able to modify function.
                 var target = instruction.Previous.Previous;
                 method.InjectBefore(target,
                     Create(OpCodes.Dup),
@@ -39,7 +41,7 @@ namespace Raptor.Modifications.Game
                     Create(OpCodes.Brfalse_S, target),
                     Create(OpCodes.Pop),
                     Create(OpCodes.Br_S, instruction.Next));
-                break;
+                i -= 5;
             }
         }
 

@@ -117,7 +117,7 @@ namespace RaptorShock
                 {
                     foreach (var state in lsd.jaggedArray.SelectMany(s => s))
                     {
-                        state.r = state.r2 = state.g = state.g2 = state.b = state.b2 = 1.0f;
+                        state.r = state.r2 = state.g = state.g2 = state.b = state.b2 = 1;
                     }
                 };
             }
@@ -134,11 +134,12 @@ namespace RaptorShock
             _keyboard = Keyboard.GetState();
             Main.chatRelease = false;
 
+            // Don't misinterpret enter or escape presses in menus.
             if (Main.gameMenu || Main.editChest || Main.editSign)
             {
                 return;
             }
-
+            
             if (IsKeyTapped(Keys.Enter) && !IsAltDown)
             {
                 Main.drawingPlayerChat = !Main.drawingPlayerChat;
@@ -234,6 +235,7 @@ namespace RaptorShock
                     {
                         _commands.NoclipPosition += new Vector2(0, player.moveSpeed);
                     }
+                    player.gfxOffY = 0;
                     player.position = _commands.NoclipPosition;
                 }
             }

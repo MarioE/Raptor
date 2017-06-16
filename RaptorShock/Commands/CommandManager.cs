@@ -167,6 +167,7 @@ namespace RaptorShock.Commands
                 {
                     var parameters = new List<object>();
                     s = reducers.Aggregate(s, (s2, reducer) => reducer(s2, parameters));
+                    // Ensure that all arguments were consumed.
                     if (!string.IsNullOrWhiteSpace(s))
                     {
                         throw new FormatException($"Syntax: {syntax}");

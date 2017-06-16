@@ -16,8 +16,7 @@ namespace Raptor.Api
             : base(0)
         {
         }
-
-        /// <inheritdoc />
+        
         public override void Configure(Assembly sourceAssembly, ILoggerRepository targetRepository)
         {
             var hierarchy = (Hierarchy)targetRepository;

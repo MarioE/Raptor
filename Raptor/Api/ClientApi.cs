@@ -13,10 +13,7 @@ namespace Raptor.Api
 
         private readonly ILog _log = LogManager.GetLogger("API");
         private readonly List<TerrariaPlugin> _plugins = new List<TerrariaPlugin>();
-
-        /// <summary>
-        ///     Disposes the client API.
-        /// </summary>
+        
         public void Dispose()
         {
             foreach (var plugin in _plugins)
@@ -28,15 +25,12 @@ namespace Raptor.Api
                 }
                 catch (Exception ex)
                 {
-                    _log.Error($"An exception occurred while unloading the plugin '{plugin.Name}':");
+                    _log.Error($"An exception occurred while unloading {plugin.Name}:");
                     _log.Error(ex);
                 }
             }
         }
-
-        /// <summary>
-        ///     Loads the plugins.
-        /// </summary>
+        
         public void LoadPlugins()
         {
             Directory.CreateDirectory("plugins");
@@ -50,30 +44,29 @@ namespace Raptor.Api
                                       select t;
                     foreach (var pluginType in pluginTypes)
                     {
-                        var apiVersionAttributes = pluginType.GetCustomAttributes(typeof(ApiVersionAttribute), false);
-                        if (apiVersionAttributes.Length == 0)
+                        var attributes = pluginType.GetCustomAttributes(typeof(ApiVersionAttribute), false);
+                        if (attributes.Length == 0)
                         {
-                            _log.Error(
-                                $"Plugin '{pluginType.FullName}' has no API version attribute and was ignored.");
+                            _log.Error($"Plugin '{pluginType.FullName}' has no API version attribute.");
                             continue;
                         }
 
-                        var apiVersion = ((ApiVersionAttribute)apiVersionAttributes[0]).ApiVersion;
+                        var apiVersion = ((ApiVersionAttribute)attributes[0]).ApiVersion;
                         if (apiVersion.Major != ApiVersion.Major || apiVersion.Minor != ApiVersion.Minor)
                         {
-                            _log.Error(
-                                $"Plugin '{pluginType.FullName}' is designed for a different API version and was ignored.");
+                            _log.Error($"Plugin '{pluginType.FullName}' is designed for a different API version.");
                             continue;
                         }
 
                         try
                         {
-                            _plugins.Add((TerrariaPlugin)Activator.CreateInstance(pluginType));
-                            _log.Info($"Loaded plugin '{pluginType.FullName}'.");
+                            var plugin = (TerrariaPlugin)Activator.CreateInstance(pluginType);
+                            _plugins.Add(plugin);
+                            _log.Info($"Loaded {plugin.Name} v{plugin.Version} by {plugin.Author}.");
                         }
                         catch (Exception ex)
                         {
-                            _log.Error($"An exception occurred while loading the plugin '{pluginType.FullName}':");
+                            _log.Error($"An exception occurred while loading plugin '{pluginType.FullName}':");
                             _log.Error(ex);
                         }
                     }
@@ -83,7 +76,7 @@ namespace Raptor.Api
                 }
                 catch (Exception ex)
                 {
-                    _log.Error($"An exception occurred while loading the assembly '{pluginPath}':");
+                    _log.Error($"An exception occurred while loading assembly '{pluginPath}':");
                     _log.Error(ex);
                 }
             }
