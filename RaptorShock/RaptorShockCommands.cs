@@ -20,7 +20,7 @@ namespace RaptorShock
 
         [Command("anitime", ".anitime <animation-time>",
             HelpText = "Sets your selected item's animation time.",
-            Alias = "ut")]
+            Alias = "at")]
         public void AniTime(int animationTime)
         {
             if (animationTime <= 0)
