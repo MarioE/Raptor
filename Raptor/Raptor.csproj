@@ -100,6 +100,7 @@
     <Compile Include="Api\LoggerConfiguratorAttribute.cs" />
     <Compile Include="Api\TerrariaPlugin.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="Hooks\Events\Game\LightingEventArgs.cs" />
     <Compile Include="Hooks\Events\Game\LoadedContentEventArgs.cs" />
     <Compile Include="Hooks\Events\Net\GetDataEventArgs.cs" />
     <Compile Include="Hooks\Events\Net\GotDataEventArgs.cs" />
@@ -114,6 +115,7 @@
     <Compile Include="Hooks\GameHooks.cs" />
     <Compile Include="Hooks\NetHooks.cs" />
     <Compile Include="Hooks\PlayerHooks.cs" />
+    <Compile Include="Modifications\Game\LightingHook.cs" />
     <Compile Include="Modifications\Game\InitializedHook.cs" />
     <Compile Include="Modifications\Game\LoadedContentHook.cs" />
     <Compile Include="Modifications\Game\UpdateHooks.cs" />

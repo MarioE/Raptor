@@ -41,8 +41,7 @@ namespace Raptor.Hooks
 
         internal static void InvokeGotData(object messageBuffer, int index, int length)
         {
-            var args = new GotDataEventArgs((MessageBuffer)messageBuffer, index, length);
-            GotData?.Invoke(null, args);
+            GotData?.Invoke(null, new GotDataEventArgs((MessageBuffer)messageBuffer, index, length));
         }
 
         internal static bool InvokeSendData(int packetType, object text, int number1, float number2, float number3,
@@ -57,9 +56,9 @@ namespace Raptor.Hooks
         internal static void InvokeSentData(int packetType, object text, int number1, float number2, float number3,
             float number4, int number5, int number6, int number7)
         {
-            var args = new SentDataEventArgs(packetType, (NetworkText)text, number1, number2, number3, number4, number5,
-                number6, number7);
-            SentData?.Invoke(null, args);
+            SentData?.Invoke(null,
+                new SentDataEventArgs(packetType, (NetworkText)text, number1, number2, number3, number4, number5,
+                    number6, number7));
         }
     }
 }

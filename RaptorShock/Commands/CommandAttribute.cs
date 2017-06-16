@@ -25,7 +25,7 @@ namespace RaptorShock.Commands
         }
 
         /// <summary>
-        /// Gets or sets the alias.
+        ///     Gets or sets the alias.
         /// </summary>
         [CanBeNull]
         public string Alias { get; set; }

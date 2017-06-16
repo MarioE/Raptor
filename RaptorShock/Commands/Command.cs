@@ -26,29 +26,29 @@ namespace RaptorShock.Commands
         }
 
         /// <summary>
-        /// Gets the alias.
+        ///     Gets the alias.
         /// </summary>
         [CanBeNull]
         public string Alias => _attribute.Alias;
 
         /// <summary>
-        /// Gets the help text.
+        ///     Gets the help text.
         /// </summary>
         [CanBeNull]
         public string HelpText => _attribute.HelpText;
 
         /// <summary>
-        /// Gets the name.
+        ///     Gets the name.
         /// </summary>
         [NotNull]
         public string Name => _attribute.Name;
 
         /// <summary>
-        /// Gets the syntax.
+        ///     Gets the syntax.
         /// </summary>
         [NotNull]
         public string Syntax => _attribute.Syntax;
-        
+
         /// <summary>
         ///     Invokes the command using the specified string.
         /// </summary>

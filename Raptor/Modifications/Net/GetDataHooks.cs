@@ -10,7 +10,7 @@ namespace Raptor.Modifications.Net
     internal sealed class GetDataHooks : Modification
     {
         private const BindingFlags Flags = BindingFlags.NonPublic | BindingFlags.Static;
-        
+
         public override void Apply(AssemblyDefinition assembly)
         {
             var messageBuffer = assembly.GetType("MessageBuffer");

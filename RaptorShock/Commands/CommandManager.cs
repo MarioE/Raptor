@@ -25,6 +25,7 @@ namespace RaptorShock.Commands
             [typeof(float)] = new FloatParser(),
             [typeof(int)] = new IntParser(),
             [typeof(Item)] = new ItemParser(),
+            [typeof(Projectile)] = new ProjectileParser(),
             [typeof(string)] = new StringParser()
         };
 
@@ -120,7 +121,7 @@ namespace RaptorShock.Commands
 
             foreach (var method in obj.GetType().GetMethods())
             {
-                var commandAttribute = (CommandAttribute)method.GetCustomAttribute(typeof(CommandAttribute));
+                var commandAttribute = method.GetCustomAttribute<CommandAttribute>();
                 if (commandAttribute == null)
                 {
                     continue;
@@ -131,27 +132,21 @@ namespace RaptorShock.Commands
                 foreach (var parameter in method.GetParameters())
                 {
                     var parameterType = parameter.ParameterType;
-                    if (parameterType.IsGenericType && parameterType.GetGenericTypeDefinition() == typeof(Nullable<>))
-                    {
-                        parameterType = parameterType.GenericTypeArguments[0];
-                    }
-
                     if (!_parsers.TryGetValue(parameterType, out var parser))
                     {
-                        throw new InvalidOperationException(
-                            $"Command contains type '{parameterType.Name}' which cannot be parsed.");
+                        throw new InvalidOperationException($"Type '{parameterType.Name}' cannot be parsed.");
                     }
 
                     reducers.Add((s, p) =>
                     {
                         s = s.Trim();
-                        if (parameter.HasDefaultValue && string.IsNullOrEmpty(s))
+                        if (string.IsNullOrWhiteSpace(s))
                         {
-                            p.Add(parameter.DefaultValue);
-                            return s;
-                        }
-                        if (string.IsNullOrEmpty(s))
-                        {
+                            if (parameter.HasDefaultValue)
+                            {
+                                p.Add(parameter.DefaultValue);
+                                return s;
+                            }
                             throw new FormatException($"Syntax: {syntax}");
                         }
 
@@ -172,7 +167,7 @@ namespace RaptorShock.Commands
                 {
                     var parameters = new List<object>();
                     s = reducers.Aggregate(s, (s2, reducer) => reducer(s2, parameters));
-                    if (!string.IsNullOrEmpty(s))
+                    if (!string.IsNullOrWhiteSpace(s))
                     {
                         throw new FormatException($"Syntax: {syntax}");
                     }

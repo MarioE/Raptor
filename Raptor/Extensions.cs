@@ -12,7 +12,6 @@ namespace Raptor
     /// <summary>
     ///     Provides extension methods.
     /// </summary>
-    [CLSCompliant(false)]
     public static class Extensions
     {
         private static readonly Dictionary<OpCode, OpCode> ShortToLong = new Dictionary<OpCode, OpCode>
@@ -38,6 +37,7 @@ namespace Raptor
         /// </summary>
         /// <param name="method">The method, which must not be <c>null</c>.</param>
         /// <exception cref="ArgumentNullException"><paramref name="method" /> is <c>null</c>.</exception>
+        [CLSCompliant(false)]
         public static void BlankOut([NotNull] this MethodDefinition method)
         {
             if (method == null)
@@ -62,6 +62,7 @@ namespace Raptor
         /// <exception cref="ArgumentNullException">
         ///     Either <paramref name="type" /> or <paramref name="methodName" /> is <c>null</c>.
         /// </exception>
+        [CLSCompliant(false)]
         public static MethodDefinition GetMethod([NotNull] this TypeDefinition type, [NotNull] string methodName,
             [CanBeNull] string[] parameterTypeNames = null)
         {
@@ -89,6 +90,7 @@ namespace Raptor
         /// <exception cref="ArgumentNullException">
         ///     Either <paramref name="assembly" /> or <paramref name="typeName" /> is <c>null</c>.
         /// </exception>
+        [CLSCompliant(false)]
         public static TypeDefinition GetType([NotNull] this AssemblyDefinition assembly, [NotNull] string typeName)
         {
             if (assembly == null)
@@ -104,15 +106,18 @@ namespace Raptor
         }
 
         /// <summary>
-        ///     Injects the specified instructions to the beginning.
+        ///     Injects the specified instructions before the target.
         /// </summary>
         /// <param name="method">The method, which must not be <c>null</c>.</param>
+        /// <param name="target">The target, which must not be <c>null</c>.</param>
         /// <param name="instructions">The instructions, which must not be <c>null</c> or contain <c>null</c>.</param>
         /// <exception cref="ArgumentException"><paramref name="instructions" /> contains <c>null</c>.</exception>
         /// <exception cref="ArgumentNullException">
-        ///     Either <paramref name="method" /> or <paramref name="instructions" /> is <c>null</c>.
+        ///     Either <paramref name="method" />, <paramref name="target" />, or <paramref name="instructions" /> is <c>null</c>.
         /// </exception>
-        public static void InjectBeginning([NotNull] this MethodDefinition method,
+        [CLSCompliant(false)]
+        public static void InjectBefore([NotNull] this MethodDefinition method,
+            [NotNull] Instruction target,
             [ItemNotNull] [NotNull] params Instruction[] instructions)
         {
             if (method == null)
@@ -130,11 +135,39 @@ namespace Raptor
 
             var body = method.Body;
             var processor = body.GetILProcessor();
-            var target = body.Instructions[0];
             foreach (var instruction in instructions)
             {
                 processor.InsertBefore(target, instruction);
             }
+        }
+
+        /// <summary>
+        ///     Injects the specified instructions to the beginning.
+        /// </summary>
+        /// <param name="method">The method, which must not be <c>null</c>.</param>
+        /// <param name="instructions">The instructions, which must not be <c>null</c> or contain <c>null</c>.</param>
+        /// <exception cref="ArgumentException"><paramref name="instructions" /> contains <c>null</c>.</exception>
+        /// <exception cref="ArgumentNullException">
+        ///     Either <paramref name="method" /> or <paramref name="instructions" /> is <c>null</c>.
+        /// </exception>
+        [CLSCompliant(false)]
+        public static void InjectBeginning([NotNull] this MethodDefinition method,
+            [ItemNotNull] [NotNull] params Instruction[] instructions)
+        {
+            if (method == null)
+            {
+                throw new ArgumentNullException(nameof(method));
+            }
+            if (instructions == null)
+            {
+                throw new ArgumentNullException(nameof(instructions));
+            }
+            if (instructions.Contains(null))
+            {
+                throw new ArgumentException("Instructions cannot contain null.", nameof(instructions));
+            }
+
+            InjectBefore(method, method.Body.Instructions[0], instructions);
         }
 
         /// <summary>
@@ -146,6 +179,7 @@ namespace Raptor
         /// <exception cref="ArgumentNullException">
         ///     Either <paramref name="method" /> or <paramref name="instructions" /> is <c>null</c>.
         /// </exception>
+        [CLSCompliant(false)]
         public static void InjectEndings([NotNull] this MethodDefinition method,
             [ItemNotNull] [NotNull] params Instruction[] instructions)
         {
@@ -185,6 +219,7 @@ namespace Raptor
         /// </summary>
         /// <param name="method">The method, which must not be <c>null</c>.</param>
         /// <exception cref="ArgumentNullException"><paramref name="method" /> is <c>null</c>.</exception>
+        [CLSCompliant(false)]
         public static void ReplaceShortBranches([NotNull] this MethodDefinition method)
         {
             if (method == null)

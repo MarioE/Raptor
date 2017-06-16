@@ -9,7 +9,7 @@ namespace Raptor.Modifications.Game
     internal sealed class InitializedHook : Modification
     {
         private const BindingFlags Flags = BindingFlags.NonPublic | BindingFlags.Static;
-        
+
         public override void Apply(AssemblyDefinition assembly)
         {
             var main = assembly.GetType("Main");

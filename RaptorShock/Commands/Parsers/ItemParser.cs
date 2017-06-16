@@ -21,12 +21,11 @@ namespace RaptorShock.Commands.Parsers
             for (var i = 1; i < Main.maxItemTypes; ++i)
             {
                 item.SetDefaults(i);
-                if (item.Name?.StartsWith(s, StringComparison.CurrentCultureIgnoreCase) ?? false)
+                if (item.Name?.Equals(s, StringComparison.CurrentCultureIgnoreCase) ?? false)
                 {
                     return item;
                 }
             }
-
             return null;
         }
     }

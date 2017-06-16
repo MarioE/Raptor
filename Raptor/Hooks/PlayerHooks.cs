@@ -54,9 +54,8 @@ namespace Raptor.Hooks
 
         internal static void InvokeHurt(object player, object damageSource, int damage, bool isPvP, bool isCritical)
         {
-            var args = new HurtEventArgs((Player)player, (PlayerDeathReason)damageSource, damage, isPvP,
-                isCritical);
-            Hurt?.Invoke(null, args);
+            Hurt?.Invoke(null,
+                new HurtEventArgs((Player)player, (PlayerDeathReason)damageSource, damage, isPvP, isCritical));
         }
 
         internal static bool InvokeHurting(object player, object damageSource, int damage, bool isPvP, bool isCritical)
@@ -76,9 +75,8 @@ namespace Raptor.Hooks
 
         internal static void InvokeKilled(object player, object damageSource, double damage, bool isPvP)
         {
-            var args = new KilledEventArgs((Player)player, (PlayerDeathReason)damageSource, (int)damage,
-                isPvP);
-            Killed?.Invoke(null, args);
+            Killed?.Invoke(null,
+                new KilledEventArgs((Player)player, (PlayerDeathReason)damageSource, (int)damage, isPvP));
         }
 
         internal static bool InvokeUpdate(object player)
@@ -96,14 +94,12 @@ namespace Raptor.Hooks
 
         internal static void InvokeUpdated(object player)
         {
-            var args = new UpdatedEventArgs((Player)player);
-            Updated?.Invoke(null, args);
+            Updated?.Invoke(null, new UpdatedEventArgs((Player)player));
         }
 
         internal static void InvokeUpdated2(object player)
         {
-            var args = new UpdatedEventArgs((Player)player);
-            Updated2?.Invoke(null, args);
+            Updated2?.Invoke(null, new UpdatedEventArgs((Player)player));
         }
     }
 }

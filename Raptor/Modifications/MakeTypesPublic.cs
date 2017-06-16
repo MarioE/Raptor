@@ -46,7 +46,7 @@ namespace Raptor.Modifications
                 MakePublic(nestedType);
             }
         }
-        
+
         public override void Apply(AssemblyDefinition assembly)
         {
             foreach (var type in assembly.Modules.SelectMany(m => m.Types))

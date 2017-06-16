@@ -74,6 +74,7 @@
     <Compile Include="Commands\Parsers\ByteParser.cs" />
     <Compile Include="Commands\Parsers\FloatParser.cs" />
     <Compile Include="Commands\Parsers\ItemParser.cs" />
+    <Compile Include="Commands\Parsers\ProjectileParser.cs" />
     <Compile Include="Commands\Parsers\StringParser.cs" />
     <Compile Include="Commands\Parsers\IntParser.cs" />
     <Compile Include="Commands\Parsers\Parser.cs" />

@@ -1,13 +1,16 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
 using log4net;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Newtonsoft.Json;
 using Raptor.Api;
 using Raptor.Hooks;
+using Raptor.Hooks.Events.Game;
 using Raptor.Hooks.Events.Player;
 using RaptorShock.Commands;
 using Terraria;
@@ -45,11 +48,12 @@ namespace RaptorShock
 
             CommandManager.Register(_commands);
             GameHooks.Initialized += OnGameInitialized;
+            GameHooks.Lighting += OnGameLighting;
             GameHooks.Update += OnGameUpdate;
             PlayerHooks.Hurting += OnPlayerHurting;
             PlayerHooks.Kill += OnPlayerKill;
-            PlayerHooks.Update2 += OnPlayerUpdate2;
             PlayerHooks.Updated2 += OnPlayerUpdated2;
+            PlayerHooks.Updated += OnPlayerUpdated;
         }
 
         /// <summary>
@@ -86,11 +90,12 @@ namespace RaptorShock
 
                 CommandManager.Deregister(_commands);
                 GameHooks.Initialized -= OnGameInitialized;
+                GameHooks.Lighting -= OnGameLighting;
                 GameHooks.Update -= OnGameUpdate;
                 PlayerHooks.Hurting -= OnPlayerHurting;
                 PlayerHooks.Kill -= OnPlayerKill;
-                PlayerHooks.Update2 -= OnPlayerUpdate2;
                 PlayerHooks.Updated2 -= OnPlayerUpdated2;
+                PlayerHooks.Updated -= OnPlayerUpdated;
             }
 
             base.Dispose(disposing);
@@ -102,6 +107,20 @@ namespace RaptorShock
         private void OnGameInitialized(object sender, EventArgs e)
         {
             Main.showSplash = _config.ShowSplashScreen;
+        }
+
+        private void OnGameLighting(object sender, LightingEventArgs e)
+        {
+            if (_commands.IsFullBright)
+            {
+                e.SwipeData.function = lsd =>
+                {
+                    foreach (var state in lsd.jaggedArray.SelectMany(s => s))
+                    {
+                        state.r = state.r2 = state.g = state.g2 = state.b = state.b2 = 1.0f;
+                    }
+                };
+            }
         }
 
         private void OnGameUpdate(object sender, HandledEventArgs e)
@@ -192,11 +211,43 @@ namespace RaptorShock
             }
         }
 
-        private void OnPlayerUpdate2(object sender, UpdatedEventArgs e)
+        private void OnPlayerUpdated(object sender, UpdatedEventArgs e)
         {
             if (e.IsLocal)
             {
                 var player = e.Player;
+                if (_commands.IsNoclip)
+                {
+                    if (player.controlLeft)
+                    {
+                        _commands.NoclipPosition += new Vector2(-player.moveSpeed, 0);
+                    }
+                    if (player.controlRight)
+                    {
+                        _commands.NoclipPosition += new Vector2(player.moveSpeed, 0);
+                    }
+                    if (player.controlUp)
+                    {
+                        _commands.NoclipPosition += new Vector2(0, -player.moveSpeed);
+                    }
+                    if (player.controlDown)
+                    {
+                        _commands.NoclipPosition += new Vector2(0, player.moveSpeed);
+                    }
+                    player.position = _commands.NoclipPosition;
+                }
+            }
+        }
+
+        private void OnPlayerUpdated2(object sender, UpdatedEventArgs e)
+        {
+            if (e.IsLocal)
+            {
+                var player = e.Player;
+                if (_commands.DefenseValue != null)
+                {
+                    player.statDefense = _commands.DefenseValue.Value;
+                }
                 if (_commands.IsGodMode)
                 {
                     player.breath = player.breathMax - 1;
@@ -211,14 +262,6 @@ namespace RaptorShock
                 {
                     player.wingTime = 2;
                 }
-            }
-        }
-
-        private void OnPlayerUpdated2(object sender, UpdatedEventArgs e)
-        {
-            if (e.IsLocal)
-            {
-                var player = e.Player;
                 if (_commands.SpeedValue != null)
                 {
                     var speed = (float)_commands.SpeedValue;
