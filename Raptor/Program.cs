@@ -8,7 +8,6 @@ using Microsoft.Win32;
 using Mono.Cecil;
 using Raptor.Api;
 using Raptor.Modifications;
-using Terraria;
 
 namespace Raptor
 {
@@ -26,7 +25,15 @@ namespace Raptor
                 ShowError("Could not find Terraria installation path.");
                 return;
             }
+            var terrariaPath = Path.Combine(rootPath, "Terraria.exe");
+            if (!File.Exists(terrariaPath))
+            {
+                ShowError("Could not find Terraria executable.");
+                return;
+            }
 
+            // If necessary, request for administrative privileges and create symlinks to the Content folder and the
+            // native DLL. This is necessary because on Windows, only administrators can create symlinks by default.
             if (args.Length == 1 && args[0] == "setup")
             {
                 NativeMethods.CreateSymbolicLink("Content", Path.Combine(rootPath, "Content"), 1);
@@ -45,13 +52,6 @@ namespace Raptor
                 };
                 process.Start();
                 process.WaitForExit();
-            }
-
-            var terrariaPath = Path.Combine(rootPath, "Terraria.exe");
-            if (!File.Exists(terrariaPath))
-            {
-                ShowError("Could not find Terraria executable.");
-                return;
             }
 
             var assembly = AssemblyDefinition.ReadAssembly(terrariaPath);
@@ -86,30 +86,21 @@ namespace Raptor
             {
                 return _terrariaAssembly;
             }
-            if (shortName == "ReLogic")
+
+            var resourceName = new AssemblyName(args.Name).Name + ".dll";
+            resourceName = _terrariaAssembly.GetManifestResourceNames().FirstOrDefault(n => n.EndsWith(resourceName));
+            if (resourceName == null)
             {
-                var stream = _terrariaAssembly.GetManifestResourceStream("Terraria.Libraries.ReLogic.ReLogic.dll");
+                return null;
+            }
+
+            using (var stream = _terrariaAssembly.GetManifestResourceStream(resourceName))
+            {
                 // ReSharper disable once PossibleNullReferenceException
                 var bytes = new byte[stream.Length];
                 stream.Read(bytes, 0, bytes.Length);
                 return Assembly.Load(bytes);
             }
-
-            Directory.CreateDirectory("plugins");
-            foreach (var pluginPath in Directory.EnumerateDirectories("plugins", "*.dll"))
-            {
-                try
-                {
-                    if (name == AssemblyName.GetAssemblyName(pluginPath).FullName)
-                    {
-                        return Assembly.LoadFrom(pluginPath);
-                    }
-                }
-                catch (BadImageFormatException)
-                {
-                }
-            }
-            return null;
         }
 
         private static void Run(string[] args)
@@ -117,7 +108,7 @@ namespace Raptor
             using (var clientApi = new ClientApi())
             {
                 clientApi.LoadPlugins();
-                WindowsLaunch.Main(args);
+                Terraria.Program.LaunchGame(args);
             }
         }
 
