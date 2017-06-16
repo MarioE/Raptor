@@ -46,7 +46,22 @@ namespace RaptorShock
                 _config = JsonConvert.DeserializeObject<Config>(File.ReadAllText(ConfigPath));
             }
 
+            CommandManager.AddParser(typeof(byte), s => byte.TryParse(s, out var result) ? (object)result : null);
+            CommandManager.AddParser(typeof(float), s => float.TryParse(s, out var result) ? (object)result : null);
+            CommandManager.AddParser(typeof(int), s => int.TryParse(s, out var result) ? (object)result : null);
+            CommandManager.AddParser(typeof(Item), s =>
+            {
+                var items = Utils.GetItemsByNameOrId(s);
+                return items.Count == 1 ? items[0] : null;
+            });
+            CommandManager.AddParser(typeof(Projectile), s =>
+            {
+                var projectiles = Utils.GetProjectilesByNameOrId(s);
+                return projectiles.Count == 1 ? projectiles[0] : null;
+            });
+            CommandManager.AddParser(typeof(string), s => s);
             CommandManager.Register(_commands);
+
             GameHooks.Initialized += OnGameInitialized;
             GameHooks.Lighting += OnGameLighting;
             GameHooks.Update += OnGameUpdate;
@@ -87,8 +102,7 @@ namespace RaptorShock
             if (disposing)
             {
                 File.WriteAllText(ConfigPath, JsonConvert.SerializeObject(_config, Formatting.Indented));
-
-                CommandManager.Deregister(_commands);
+                
                 GameHooks.Initialized -= OnGameInitialized;
                 GameHooks.Lighting -= OnGameLighting;
                 GameHooks.Update -= OnGameUpdate;

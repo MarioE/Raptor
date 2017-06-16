@@ -56,6 +56,7 @@ namespace RaptorShock
             {
                 var name = kvp.Key;
                 id = kvp.Value;
+                // Check item names with CurrentCultureIgnoreCase.
                 if (name.Equals(nameOrId, StringComparison.CurrentCultureIgnoreCase))
                 {
                     var item = new Item();
@@ -100,6 +101,7 @@ namespace RaptorShock
             {
                 var name = kvp.Key;
                 id = kvp.Value;
+                // Check projectile names with CurrentCultureIgnoreCase.
                 if (name.Equals(nameOrId, StringComparison.CurrentCultureIgnoreCase))
                 {
                     var projectile = new Projectile();

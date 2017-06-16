@@ -71,13 +71,7 @@
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\CommandAttribute.cs" />
     <Compile Include="Commands\CommandManager.cs" />
-    <Compile Include="Commands\Parsers\ByteParser.cs" />
-    <Compile Include="Commands\Parsers\FloatParser.cs" />
-    <Compile Include="Commands\Parsers\ItemParser.cs" />
-    <Compile Include="Commands\Parsers\ProjectileParser.cs" />
-    <Compile Include="Commands\Parsers\StringParser.cs" />
-    <Compile Include="Commands\Parsers\IntParser.cs" />
-    <Compile Include="Commands\Parsers\Parser.cs" />
+    <Compile Include="Commands\Parser.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="RaptorShockCommands.cs" />
     <Compile Include="RaptorShockPlugin.cs" />

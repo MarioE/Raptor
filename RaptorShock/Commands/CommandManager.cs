@@ -5,8 +5,6 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
-using RaptorShock.Commands.Parsers;
-using Terraria;
 
 namespace RaptorShock.Commands
 {
@@ -19,19 +17,10 @@ namespace RaptorShock.Commands
         private static readonly Regex CamelCaseRegex = new Regex("(?<=[a-z])([A-Z])");
 
         private readonly List<Command> _commands = new List<Command>();
-
-        private readonly Dictionary<Type, Parser> _parsers = new Dictionary<Type, Parser>
-        {
-            [typeof(byte)] = new ByteParser(),
-            [typeof(float)] = new FloatParser(),
-            [typeof(int)] = new IntParser(),
-            [typeof(Item)] = new ItemParser(),
-            [typeof(Projectile)] = new ProjectileParser(),
-            [typeof(string)] = new StringParser()
-        };
+        private readonly Dictionary<Type, Parser> _parsers = new Dictionary<Type, Parser>();
 
         /// <summary>
-        ///     Gets the commands.
+        ///     Gets a read-only view of the commands.
         /// </summary>
         public IEnumerable<Command> Commands => _commands.AsReadOnly();
 
@@ -100,14 +89,12 @@ namespace RaptorShock.Commands
                 throw new ArgumentNullException(nameof(obj));
             }
 
-            foreach (var method in obj.GetType().GetMethods())
+            var commandAttributes = from m in obj.GetType().GetMethods()
+                                    let a = m.GetCustomAttribute<CommandAttribute>()
+                                    where a != null
+                                    select a;
+            foreach (var commandAttribute in commandAttributes)
             {
-                var commandAttribute = (CommandAttribute)method.GetCustomAttribute(typeof(CommandAttribute));
-                if (commandAttribute == null)
-                {
-                    continue;
-                }
-
                 _commands.RemoveAll(c => c.Name == commandAttribute.Name);
             }
         }
@@ -161,7 +148,7 @@ namespace RaptorShock.Commands
                         }
 
                         var argument = GetNextArgument(s, out var nextIndex);
-                        var result = parser.Parse(argument);
+                        var result = parser(argument);
                         if (result == null)
                         {
                             var parameterName = PrettifyCamelCase(parameter.Name);
@@ -173,7 +160,7 @@ namespace RaptorShock.Commands
                     });
                 }
 
-                void Action(string s)
+                _commands.Add(new Command(commandAttribute, s =>
                 {
                     var parameters = new List<object>();
                     s = reducers.Aggregate(s, (s2, reducer) => reducer(s2, parameters));
@@ -184,9 +171,7 @@ namespace RaptorShock.Commands
                     }
 
                     method.Invoke(obj, parameters.ToArray());
-                }
-
-                _commands.Add(new Command(commandAttribute, Action));
+                }));
             }
         }
 
@@ -203,34 +188,16 @@ namespace RaptorShock.Commands
                 throw new ArgumentNullException(nameof(s));
             }
 
-            Command command = null;
-            var longestCommandName = "";
-            foreach (var command2 in _commands)
-            {
-                var commandNames = new List<string> {command2.Name};
-                if (command2.Alias != null)
-                {
-                    commandNames.Add(command2.Alias);
-                }
-
-                foreach (var commandName in commandNames)
-                {
-                    if (s.StartsWith(commandName, StringComparison.OrdinalIgnoreCase))
-                    {
-                        if (commandName.Length > longestCommandName.Length)
-                        {
-                            command = command2;
-                            longestCommandName = commandName;
-                        }
-                    }
-                }
-            }
+            var commandName = s.Split(' ')[0];
+            var command = _commands.FirstOrDefault(
+                c => c.Name.Equals(commandName, StringComparison.OrdinalIgnoreCase) ||
+                     (c.Alias?.Equals(commandName, StringComparison.OrdinalIgnoreCase) ?? false));
             if (command == null)
             {
                 throw new FormatException("Invalid command.");
             }
 
-            command.Invoke(s.Substring(longestCommandName.Length));
+            command.Invoke(s.Substring(commandName.Length));
         }
 
         private delegate string CommandReducer(string s, List<object> parameters);
