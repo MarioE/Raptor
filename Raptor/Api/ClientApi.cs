@@ -13,7 +13,7 @@ namespace Raptor.Api
 
         private readonly ILog _log = LogManager.GetLogger("API");
         private readonly List<TerrariaPlugin> _plugins = new List<TerrariaPlugin>();
-        
+
         public void Dispose()
         {
             foreach (var plugin in _plugins)
@@ -30,7 +30,7 @@ namespace Raptor.Api
                 }
             }
         }
-        
+
         public void LoadPlugins()
         {
             Directory.CreateDirectory("plugins");

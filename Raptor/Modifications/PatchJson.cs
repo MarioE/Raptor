@@ -16,7 +16,7 @@ namespace Raptor.Modifications
                     reference.Version = typeof(JsonConvert).Assembly.GetName().Version;
                 }
             }
-            
+
             module.Resources.Remove(
                 module.Resources.Single(r => r.Name == "Terraria.Libraries.JSON.NET.Newtonsoft.Json.dll"));
         }

@@ -12,10 +12,14 @@ namespace RaptorShock
         public int? DefenseValue { get; private set; }
         public bool IsFullBright { get; private set; }
         public bool IsGodMode { get; private set; }
+        public bool IsInfiniteAmmo { get; private set; }
+        public bool IsInfiniteBreath { get; private set; }
+        public bool IsInfiniteHealth { get; private set; }
         public bool IsInfiniteMana { get; private set; }
         public bool IsInfiniteWings { get; private set; }
         public bool IsNoclip { get; private set; }
         public Vector2 NoclipPosition { get; set; }
+        public int? RangeValue { get; private set; }
         public float? SpeedValue { get; private set; }
 
         [Command("anitime", ".anitime <animation-time>",
@@ -118,6 +122,30 @@ namespace RaptorShock
             Utils.ShowInfoMessage(command2.HelpText ?? "No help text available.");
         }
 
+        [Command("infammo", ".infammo",
+            HelpText = "Toggles infinite ammo.")]
+        public void InfiniteAmmo()
+        {
+            IsInfiniteAmmo = !IsInfiniteAmmo;
+            Utils.ShowSuccessMessage($"{(IsInfiniteAmmo ? "En" : "Dis")}abled infinite ammo.");
+        }
+
+        [Command("infbreath", ".infbreath",
+            HelpText = "Toggles infinite breath.")]
+        public void InfiniteBreath()
+        {
+            IsInfiniteBreath = !IsInfiniteBreath;
+            Utils.ShowSuccessMessage($"{(IsInfiniteBreath ? "En" : "Dis")}abled infinite breath.");
+        }
+
+        [Command("infhealth", ".infhealth",
+            HelpText = "Toggles infinite health.")]
+        public void InfiniteHealth()
+        {
+            IsInfiniteHealth = !IsInfiniteHealth;
+            Utils.ShowSuccessMessage($"{(IsInfiniteHealth ? "En" : "Dis")}abled infinite health.");
+        }
+
         [Command("infmana", ".infmana",
             HelpText = "Toggles infinite mana.")]
         public void InfiniteMana()
@@ -137,8 +165,12 @@ namespace RaptorShock
         [Command("item", ".item <item-name> [stack-size] [prefix]",
             HelpText = "Spawns an item.",
             Alias = "i")]
-        public void Item(Item item, int stackSize = 1, byte prefix = 0)
+        public void Item(Item item, int? stackSize = null, byte prefix = 0)
         {
+            if (stackSize == null)
+            {
+                stackSize = item.maxStack;
+            }
             if (stackSize <= 0 || stackSize > item.maxStack)
             {
                 Utils.ShowErrorMessage($"Invalid stack size '{stackSize}'.");
@@ -151,12 +183,12 @@ namespace RaptorShock
             }
 
             var player = Utils.LocalPlayer;
-            item.stack = stackSize;
+            item.stack = stackSize.Value;
             item.position = player.Center;
             item.Prefix(prefix);
 
             player.GetItem(player.whoAmI, item);
-            Utils.ShowSuccessMessage($"Spawned {stackSize} {item.Name.ToLower()}(s).");
+            Utils.ShowSuccessMessage($"Spawned {stackSize} {item.Name}(s).");
         }
 
         [Command("noclip", ".noclip",
@@ -177,7 +209,21 @@ namespace RaptorShock
         public void Projectile(Projectile projectile)
         {
             Utils.LocalPlayerItem.shoot = projectile.type;
-            Utils.ShowSuccessMessage($"Set projectile to {projectile.Name.ToLower()}.");
+            Utils.ShowSuccessMessage($"Set projectile to {projectile.Name}.");
+        }
+
+        [Command("range", ".range <range>",
+            HelpText = "Sets your range.")]
+        public void Range(int range)
+        {
+            if (range <= 0)
+            {
+                Utils.ShowErrorMessage($"Invalid range '{range}'.");
+                return;
+            }
+
+            RangeValue = range;
+            Utils.ShowSuccessMessage($"Set range to '{range}'.");
         }
 
         [Command("reset", ".reset",
@@ -185,7 +231,9 @@ namespace RaptorShock
         public void Reset()
         {
             DefenseValue = null;
-            IsFullBright = IsGodMode = IsInfiniteMana = IsInfiniteWings = IsNoclip = false;
+            IsFullBright = IsGodMode = IsInfiniteAmmo = IsInfiniteBreath =
+                IsInfiniteHealth = IsInfiniteMana = IsInfiniteWings = IsNoclip = false;
+            RangeValue = null;
             SpeedValue = null;
             Utils.ShowSuccessMessage("Reset everything.");
         }

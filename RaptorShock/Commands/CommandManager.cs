@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 using RaptorShock.Commands.Parsers;
@@ -36,29 +37,34 @@ namespace RaptorShock.Commands
 
         private static string GetNextArgument(string s, out int nextIndex)
         {
-            var i = 1;
-            if (s.StartsWith("\""))
+            var inQuotes = s[0] == '"';
+            var i = inQuotes ? 1 : 0;
+            var result = new StringBuilder();
+            for (; i < s.Length; ++i)
             {
-                while (i < s.Length && (s[i] != '"' || s[i] == '"' && s[i - 1] == '\\'))
+                var c = s[i];
+                if (c == '\\' && ++i < s.Length)
+                {
+                    var nextC = s[i];
+                    if (nextC != '"' && nextC != ' ' && nextC != '\\')
+                    {
+                        result.Append(c);
+                    }
+                    result.Append(nextC);
+                }
+                else if (c == '"' && inQuotes || char.IsWhiteSpace(c) && !inQuotes)
                 {
                     ++i;
+                    break;
                 }
-                if (i == 1 || s[i] != '"')
+                else
                 {
-                    throw new FormatException("Unclosed quotes.");
+                    result.Append(c);
                 }
-
-                nextIndex = i;
-                return s.Substring(1, i - 2);
-            }
-
-            while (i < s.Length && !char.IsWhiteSpace(s[i]))
-            {
-                ++i;
             }
 
             nextIndex = i;
-            return s.Substring(0, i);
+            return result.ToString();
         }
 
         private static string PrettifyCamelCase(string camelCase) =>
@@ -132,6 +138,10 @@ namespace RaptorShock.Commands
                 foreach (var parameter in method.GetParameters())
                 {
                     var parameterType = parameter.ParameterType;
+                    if (parameterType.IsGenericType && parameterType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                    {
+                        parameterType = parameterType.GenericTypeArguments[0];
+                    }
                     if (!_parsers.TryGetValue(parameterType, out var parser))
                     {
                         throw new InvalidOperationException($"Type '{parameterType.Name}' cannot be parsed.");

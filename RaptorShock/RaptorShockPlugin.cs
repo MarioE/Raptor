@@ -107,6 +107,7 @@ namespace RaptorShock
         private void OnGameInitialized(object sender, EventArgs e)
         {
             Main.showSplash = _config.ShowSplashScreen;
+            Utils.InitializeNames();
         }
 
         private void OnGameLighting(object sender, LightingEventArgs e)
@@ -134,12 +135,12 @@ namespace RaptorShock
             _keyboard = Keyboard.GetState();
             Main.chatRelease = false;
 
-            // Don't misinterpret enter or escape presses in menus.
+            // Don't misinterpret key presses in menus.
             if (Main.gameMenu || Main.editChest || Main.editSign)
             {
                 return;
             }
-            
+
             if (IsKeyTapped(Keys.Enter) && !IsAltDown)
             {
                 Main.drawingPlayerChat = !Main.drawingPlayerChat;
@@ -250,19 +251,37 @@ namespace RaptorShock
                 {
                     player.statDefense = _commands.DefenseValue.Value;
                 }
-                if (_commands.IsGodMode)
+                if (_commands.IsInfiniteAmmo)
+                {
+                    foreach (var item in player.inventory)
+                    {
+                        if (item.ammo != 0 && !item.notAmmo)
+                        {
+                            item.stack = item.maxStack;
+                        }
+                    }
+                }
+                if (_commands.IsInfiniteBreath || _commands.IsGodMode)
                 {
                     player.breath = player.breathMax - 1;
-                    player.statLife = player.statLifeMax2;
-                    player.statMana = player.statManaMax2;
                 }
-                if (_commands.IsInfiniteMana)
+                if (_commands.IsInfiniteHealth || _commands.IsGodMode)
+                {
+                    player.statLife = player.statLifeMax2;
+                }
+                if (_commands.IsInfiniteMana || _commands.IsGodMode)
                 {
                     player.statMana = player.statManaMax2;
                 }
                 if (_commands.IsInfiniteWings)
                 {
                     player.wingTime = 2;
+                }
+                if (_commands.RangeValue != null)
+                {
+                    var range = _commands.RangeValue.Value;
+                    Player.tileRangeX = range;
+                    Player.tileRangeY = range;
                 }
                 if (_commands.SpeedValue != null)
                 {
