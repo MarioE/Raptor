@@ -19,6 +19,13 @@ namespace Raptor
         private static ClientApi _clientApi;
         private static Assembly _terrariaAssembly;
 
+        [UsedImplicitly]
+        internal static void OnLaunch(object main)
+        {
+            _clientApi = new ClientApi();
+            _clientApi.LoadPlugins((Main)main);
+        }
+
         [STAThread]
         private static void Main(string[] args)
         {
@@ -120,13 +127,6 @@ namespace Raptor
                 stream.Read(bytes, 0, bytes.Length);
                 return Assembly.Load(bytes);
             }
-        }
-
-        [UsedImplicitly]
-        private static void OnLaunch(object main)
-        {
-            _clientApi = new ClientApi();
-            _clientApi.LoadPlugins((Main)main);
         }
 
         private static void Run(string[] args)

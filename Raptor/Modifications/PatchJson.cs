@@ -11,7 +11,7 @@ namespace Raptor.Modifications
             var module = assembly.MainModule;
             foreach (var reference in module.AssemblyReferences)
             {
-                if (reference.Name == "Newtonsft.Json")
+                if (reference.Name == "Newtonsoft.Json")
                 {
                     reference.Version = typeof(JsonConvert).Assembly.GetName().Version;
                 }
