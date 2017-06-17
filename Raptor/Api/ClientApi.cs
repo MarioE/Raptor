@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using log4net;
+using Terraria;
 
 namespace Raptor.Api
 {
@@ -31,7 +32,7 @@ namespace Raptor.Api
             }
         }
 
-        public void LoadPlugins()
+        public void LoadPlugins(Main main)
         {
             Directory.CreateDirectory("plugins");
             foreach (var pluginPath in Directory.EnumerateFiles("plugins", "*.dll"))
@@ -60,7 +61,7 @@ namespace Raptor.Api
 
                         try
                         {
-                            var plugin = (TerrariaPlugin)Activator.CreateInstance(pluginType);
+                            var plugin = (TerrariaPlugin)Activator.CreateInstance(pluginType, main);
                             _plugins.Add(plugin);
                             _log.Info($"Loaded {plugin.Name} v{plugin.Version} by {plugin.Author}.");
                         }

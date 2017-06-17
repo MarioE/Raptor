@@ -99,27 +99,26 @@ namespace RaptorShock
             if (commandName == null)
             {
                 Utils.ShowSuccessMessage("Available commands:");
-                foreach (var command in commands)
-                {
-                    Utils.ShowInfoMessage(command.Alias == null
-                        ? $"{command.Name}: {command.HelpText}"
-                        : $"{command.Name} (alias: {command.Alias}): {command.HelpText}");
-                }
+                Utils.ShowInfoMessage(string.Join(", ", commands.Select(c => c.Name)));
                 return;
             }
 
-            var command2 =
-                commands.FirstOrDefault(c => c.Name.Equals(commandName, StringComparison.OrdinalIgnoreCase) ||
-                                             (c.Alias?.Equals(commandName, StringComparison.OrdinalIgnoreCase) ??
-                                              false));
-            if (command2 == null)
+            var command = commands.FirstOrDefault(
+                c => c.Name.Equals(commandName, StringComparison.OrdinalIgnoreCase) ||
+                     (c.Alias?.Equals(commandName, StringComparison.OrdinalIgnoreCase) ?? false));
+            if (command == null)
             {
                 Utils.ShowErrorMessage($"Invalid command '{commandName}'.");
                 return;
             }
 
-            Utils.ShowInfoMessage($"Syntax: {command2.Syntax}");
-            Utils.ShowInfoMessage(command2.HelpText ?? "No help text available.");
+            Utils.ShowSuccessMessage($"{command.Name} help:");
+            if (command.Alias != null)
+            {
+                Utils.ShowInfoMessage($"Alias: {command.Alias}");
+            }
+            Utils.ShowInfoMessage($"Syntax: {command.Syntax}");
+            Utils.ShowInfoMessage(command.HelpText ?? "No help text available.");
         }
 
         [Command("infammo", ".infammo",
@@ -167,10 +166,7 @@ namespace RaptorShock
             Alias = "i")]
         public void Item(Item item, int? stackSize = null, byte prefix = 0)
         {
-            if (stackSize == null)
-            {
-                stackSize = item.maxStack;
-            }
+            stackSize = stackSize ?? item.maxStack;
             if (stackSize <= 0 || stackSize > item.maxStack)
             {
                 Utils.ShowErrorMessage($"Invalid stack size '{stackSize}'.");

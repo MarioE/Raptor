@@ -5,15 +5,18 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
+using JetBrains.Annotations;
 using Microsoft.Win32;
 using Mono.Cecil;
 using Raptor.Api;
 using Raptor.Modifications;
+using Terraria;
 
 namespace Raptor
 {
     internal static class Program
     {
+        private static ClientApi _clientApi;
         private static Assembly _terrariaAssembly;
 
         [STAThread]
@@ -119,13 +122,17 @@ namespace Raptor
             }
         }
 
+        [UsedImplicitly]
+        private static void OnLaunch(object main)
+        {
+            _clientApi = new ClientApi();
+            _clientApi.LoadPlugins((Main)main);
+        }
+
         private static void Run(string[] args)
         {
-            using (var clientApi = new ClientApi())
-            {
-                clientApi.LoadPlugins();
-                Terraria.Program.LaunchGame(args);
-            }
+            Terraria.Program.LaunchGame(args);
+            _clientApi.Dispose();
         }
 
         private static void ShowError(string message)

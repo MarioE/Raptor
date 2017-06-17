@@ -36,7 +36,8 @@ namespace RaptorShock
         /// <summary>
         ///     Initializes the <see cref="RaptorShockPlugin" /> class.
         /// </summary>
-        public RaptorShockPlugin()
+        [CLSCompliant(false)]
+        public RaptorShockPlugin(Main main) : base(main)
         {
             Instance = this;
 
@@ -102,7 +103,7 @@ namespace RaptorShock
             if (disposing)
             {
                 File.WriteAllText(ConfigPath, JsonConvert.SerializeObject(_config, Formatting.Indented));
-                
+
                 GameHooks.Initialized -= OnGameInitialized;
                 GameHooks.Lighting -= OnGameLighting;
                 GameHooks.Update -= OnGameUpdate;

@@ -11,7 +11,6 @@ namespace Raptor.Modifications.Player
     {
         private const BindingFlags Flags = BindingFlags.NonPublic | BindingFlags.Static;
 
-        /// <inheritdoc />
         public override void Apply(AssemblyDefinition assembly)
         {
             var player = assembly.GetType("Player");
