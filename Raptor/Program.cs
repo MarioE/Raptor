@@ -70,7 +70,7 @@ namespace Raptor
                     }
                     catch (Win32Exception)
                     {
-                        ShowError("Could not create symbolic links, as permission was not given.");
+                        ShowError("Could not create symbolic links as permission was not given.");
                         return;
                     }
                     if (!Directory.Exists("Content") || !File.Exists("ReLogic.Native.dll"))

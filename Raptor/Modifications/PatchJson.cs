@@ -9,14 +9,9 @@ namespace Raptor.Modifications
         public override void Apply(AssemblyDefinition assembly)
         {
             var module = assembly.MainModule;
-            foreach (var reference in module.AssemblyReferences)
-            {
-                if (reference.Name == "Newtonsoft.Json")
-                {
-                    reference.Version = typeof(JsonConvert).Assembly.GetName().Version;
-                }
-            }
-
+            var reference = module.AssemblyReferences.Single(r => r.Name == "Newtonsoft.Json");
+            reference.Version = typeof(JsonConvert).Assembly.GetName().Version;
+            
             module.Resources.Remove(
                 module.Resources.Single(r => r.Name == "Terraria.Libraries.JSON.NET.Newtonsoft.Json.dll"));
         }

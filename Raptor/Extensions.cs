@@ -75,7 +75,7 @@ namespace Raptor
                 throw new ArgumentNullException(nameof(methodName));
             }
 
-            return type.Methods.First(
+            return type.Methods.Single(
                 m => m.Name == methodName &&
                      (parameterTypeNames == null ||
                       m.Parameters.Select(p => p.ParameterType.Name).SequenceEqual(parameterTypeNames)));
@@ -102,7 +102,7 @@ namespace Raptor
                 throw new ArgumentNullException(nameof(typeName));
             }
 
-            return assembly.Modules.SelectMany(m => m.Types).First(t => t.Name == typeName);
+            return assembly.Modules.SelectMany(m => m.Types).Single(t => t.Name == typeName);
         }
 
         /// <summary>

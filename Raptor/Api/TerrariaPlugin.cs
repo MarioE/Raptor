@@ -18,7 +18,7 @@ namespace Raptor.Api
         [CLSCompliant(false)]
         protected TerrariaPlugin([NotNull] Main main)
         {
-            MainInstance = main ?? throw new ArgumentNullException(nameof(main));
+            Main = main ?? throw new ArgumentNullException(nameof(main));
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace Raptor.Api
         ///     Gets the Main instance.
         /// </summary>
         [CLSCompliant(false)]
-        public Main MainInstance { get; }
+        public Main Main { get; }
 
         /// <summary>
         ///     Gets the name.
