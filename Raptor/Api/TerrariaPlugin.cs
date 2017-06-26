@@ -1,6 +1,5 @@
 ﻿using System;
 using JetBrains.Annotations;
-using Terraria;
 
 namespace Raptor.Api
 {
@@ -10,17 +9,6 @@ namespace Raptor.Api
     [PublicAPI]
     public abstract class TerrariaPlugin : IDisposable
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="TerrariaPlugin" /> class with the specified Main instance.
-        /// </summary>
-        /// <param name="main">The Main instance, which must not be <c>null</c>.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="main" /> is <c>null</c>.</exception>
-        [CLSCompliant(false)]
-        protected TerrariaPlugin([NotNull] Main main)
-        {
-            Main = main ?? throw new ArgumentNullException(nameof(main));
-        }
-
         /// <summary>
         ///     Gets the author.
         /// </summary>
@@ -32,12 +20,6 @@ namespace Raptor.Api
         /// </summary>
         [NotNull]
         public virtual string Description => "";
-
-        /// <summary>
-        ///     Gets the Main instance.
-        /// </summary>
-        [CLSCompliant(false)]
-        public Main Main { get; }
 
         /// <summary>
         ///     Gets the name.

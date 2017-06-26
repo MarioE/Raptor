@@ -37,7 +37,7 @@ namespace RaptorShock
         ///     Initializes the <see cref="RaptorShockPlugin" /> class.
         /// </summary>
         [CLSCompliant(false)]
-        public RaptorShockPlugin(Main main) : base(main)
+        public RaptorShockPlugin()
         {
             Instance = this;
 

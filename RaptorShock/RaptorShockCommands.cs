@@ -46,6 +46,14 @@ namespace RaptorShock
             Utils.ShowSuccessMessage($"{(Utils.LocalPlayerItem.autoReuse ? "En" : "Dis")}abled autoreuse.");
         }
 
+        [Command("createtile", ".createtile <createtile>",
+            HelpText = "Sets your selected item's createTile.")]
+        public void CreateTile(int createTile)
+        {
+            Utils.LocalPlayerItem.createTile = createTile;
+            Utils.ShowSuccessMessage($"Set createTile to '{createTile}'.");
+        }
+
         [Command("damage", ".damage <damage>",
             HelpText = "Sets your selected item's damage.")]
         public void Damage(int damage)

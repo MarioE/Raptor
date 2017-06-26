@@ -119,7 +119,6 @@
     <Compile Include="Modifications\Game\InitializedHook.cs" />
     <Compile Include="Modifications\Game\LoadedContentHook.cs" />
     <Compile Include="Modifications\Game\UpdateHooks.cs" />
-    <Compile Include="Modifications\LaunchHook.cs" />
     <Compile Include="Modifications\MakeTypesPublic.cs" />
     <Compile Include="Modifications\Modification.cs" />
     <Compile Include="Modifications\Net\GetDataHooks.cs" />
